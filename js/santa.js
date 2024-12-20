@@ -3,8 +3,8 @@ class Santa {
         this.game = game;
         this.x = x;
         this.y = y;
-        this.width = 50;  // Adjusted to match potential image size
-        this.height = 50; // Adjusted to match potential image size
+        this.width = 100;  // Doubled from 50 to 100
+        this.height = 100; // Doubled from 50 to 100
         this.speed = speed || 2;
         
         // Image loading

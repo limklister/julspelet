@@ -8,8 +8,8 @@ class Package {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.width = 30;
-        this.height = 30;
+        this.width = 45;  // Increased from 30 to 45 (50% larger)
+        this.height = 45; // Increased from 30 to 45 (50% larger)
         this.velocityY = 0;
         this.collected = false;
         
@@ -23,7 +23,7 @@ class Package {
 
     update() {
         if (!this.collected) {
-            Physics.applyGravity(this);
+            Physics.applyGravity(this, true);  // Pass true to use package gravity
             this.y += this.velocityY;
         }
     }
@@ -46,25 +46,36 @@ class Package {
             // Increment the static counter when a package is collected
             Package.collectedPackagesCount++;
             
-            // Optional: You might want to update the UI here
-            this.updatePackageCountDisplay();
+            // Update the visual representation of packages
+            this.updatePackageDisplay();
         }
     }
 
-    // Method to update package count display
-    updatePackageCountDisplay() {
-        const packageCountElement = document.getElementById('package-count');
-        if (packageCountElement) {
-            packageCountElement.textContent = `Packages Collected: ${Package.collectedPackagesCount}`;
+    // Method to update package count display with gift icons
+    updatePackageDisplay() {
+        const packageDisplayElement = document.getElementById('package-display');
+        if (packageDisplayElement) {
+            // Clear previous display
+            packageDisplayElement.innerHTML = '';
+            
+            // Create and append gift icons for each collected package
+            for (let i = 0; i < Package.collectedPackagesCount; i++) {
+                const giftIcon = document.createElement('img');
+                giftIcon.src = 'images/gift.png';
+                giftIcon.style.width = '30px';  // Smaller size for display
+                giftIcon.style.height = '30px';
+                giftIcon.style.marginRight = '5px';
+                packageDisplayElement.appendChild(giftIcon);
+            }
         }
     }
 
-    // Static method to reset package count (useful for game restart)
+    // Static method to reset package count and display (useful for game restart)
     static resetPackageCount() {
         Package.collectedPackagesCount = 0;
-        const packageCountElement = document.getElementById('package-count');
-        if (packageCountElement) {
-            packageCountElement.textContent = 'Packages Collected: 0';
+        const packageDisplayElement = document.getElementById('package-display');
+        if (packageDisplayElement) {
+            packageDisplayElement.innerHTML = '';
         }
     }
 

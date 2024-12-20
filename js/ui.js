@@ -2,7 +2,7 @@ class UI {
     constructor() {
         // Preload images
         this.heartImage = new Image();
-        this.heartImage.src = 'images/heart.png'; // You might want to create a heart image
+        this.heartImage.src = 'images/heart.png';
         
         this.packageImage = new Image();
         this.packageImage.src = 'images/gift.png';
@@ -39,30 +39,29 @@ class UI {
         }
     }
 
-    drawPackageCount(ctx, hearts) {
-        const heartSize = 20;
-        const heartSpacing = 25;
-        const heartY = 20;
+    drawPackageCount(ctx, canvas) {
+        const packageSize = 20;
+        const packageSpacing = 25;
+        const packageY = 20;
+        const packagesCollected = Package.getPackageCount();
         
-        // Draw package icon
-        if (this.packageImage.complete && this.packageImage.naturalHeight !== 0) {
-            ctx.drawImage(
-                this.packageImage, 
-                20 + hearts * heartSpacing + 10, 
-                heartY - 5, 
-                heartSize, 
-                heartSize
-            );
+        // Position packages 100 pixels from the right edge of the canvas
+        const startX = canvas.width - 100;
+        
+        // Draw package icons for each collected package
+        for (let i = 0; i < packagesCollected; i++) {
+            const packageX = startX + i * packageSpacing;
+            
+            if (this.packageImage.complete && this.packageImage.naturalHeight !== 0) {
+                ctx.drawImage(
+                    this.packageImage, 
+                    packageX, 
+                    packageY, 
+                    packageSize, 
+                    packageSize
+                );
+            }
         }
-        
-        // Draw package count
-        ctx.fillStyle = 'black';
-        ctx.font = 'bold 16px Arial';
-        ctx.fillText(
-            `x ${Package.getPackageCount()}`, 
-            20 + hearts * heartSpacing + heartSize + 15, 
-            heartY + 15
-        );
     }
 
     drawGameOverScreen(ctx, canvas) {
@@ -89,7 +88,7 @@ class UI {
         this.drawHearts(ctx, player.hearts);
         
         // Draw package count
-        this.drawPackageCount(ctx, player.hearts);
+        this.drawPackageCount(ctx, canvas);
         
         // Draw game over screen if needed
         if (player.game && player.game.gameOver) {

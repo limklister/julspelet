@@ -1,10 +1,15 @@
 const Physics = {
-    gravity: 0.5,
+    playerGravity: 0.5,
+    packageGravity: 0.2,  // Slower gravity for packages
     friction: 0.8,
-    terminalVelocity: 10,
+    playerTerminalVelocity: 10,
+    packageTerminalVelocity: 5,
 
-    applyGravity(entity) {
-        entity.velocityY = Math.min(entity.velocityY + this.gravity, this.terminalVelocity);
+    applyGravity(entity, isPackage = false) {
+        const gravity = isPackage ? this.packageGravity : this.playerGravity;
+        const terminalVelocity = isPackage ? this.packageTerminalVelocity : this.playerTerminalVelocity;
+        
+        entity.velocityY = Math.min(entity.velocityY + gravity, terminalVelocity);
     },
 
     applyFriction(entity) {

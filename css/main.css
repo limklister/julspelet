@@ -6,5 +6,6 @@
 
 body {
     overflow: hidden;
+    background: linear-gradient(to bottom, #87CEEB, #E0F6FF);
     background-color: #87CEEB; /* Sky blue background */
 }

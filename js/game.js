@@ -12,11 +12,18 @@ class Game {
         this.ctx = this.canvas.getContext('2d');
         this.canvas.width = 800;
         this.canvas.height = 600;
+        
+        // Winter background gradient
+        const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+        gradient.addColorStop(0, '#87CEEB');
+        gradient.addColorStop(1, '#E0F6FF');
+        this.backgroundGradient = gradient;
     }
 
     initGameObjects() {
         this.player = new Player(100, this.canvas.height - 100);
         this.player.game = this; // Give player reference to game
+        this.backgroundManager = new BackgroundManager(this);
         this.platformManager = new PlatformManager(this);
         this.snowmanManager = new SnowmanManager(this);
         this.santaManager = new SantaManager(this);
@@ -35,10 +42,8 @@ class Game {
         this.renderer = new Renderer(this);
     }
 
-    // New method to add restart listener
     initRestartListener() {
         window.addEventListener('keydown', (event) => {
-            // Restart game on 'R' or 'r' key when game is over
             if ((this.gameOver) && (event.key === 'r' || event.key === 'R')) {
                 this.resetGame();
             }
@@ -55,6 +60,7 @@ class Game {
         this.player.game = this;
         
         // Regenerate game objects
+        this.backgroundManager = new BackgroundManager(this);
         this.platformManager = new PlatformManager(this);
         this.snowmanManager = new SnowmanManager(this);
         this.santaManager = new SantaManager(this);
@@ -73,6 +79,9 @@ class Game {
             this.santaManager.updateAll();
             this.camera.update();
             this.collisionHandler.checkCollisions();
+
+            // Update background (generate more trees and snowflakes as we move)
+            this.backgroundManager.update(this.camera.x);
         }
     }
 

@@ -1,34 +1,45 @@
 class Renderer {
     constructor(game) {
         this.game = game;
-        this.ctx = game.ctx;
     }
 
     draw() {
-        // Clear the canvas
-        this.ctx.clearRect(0, 0, this.game.canvas.width, this.game.canvas.height);
-        
-        // Save the current context state
-        this.ctx.save();
-        
-        // Apply camera transformation
-        this.ctx.translate(-this.game.camera.x, -this.game.camera.y);
-        
-        // Draw game elements
-        this.game.platformManager.draw(this.ctx);  // This will draw both floor and platforms
-        
-        this.game.snowmanManager.drawAll(this.ctx);
-        this.game.santaManager.drawAll(this.ctx);
-        this.game.player.draw(this.ctx);
-        
-        // Restore the context state
-        this.ctx.restore();
-        
-        // Draw UI elements (not affected by camera)
-        this.game.ui.draw(
-            this.ctx, 
-            this.game.player, 
-            this.game.canvas
-        );
+        const ctx = this.game.ctx;
+        const canvas = this.game.canvas;
+        const camera = this.game.camera;
+
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw winter background gradient
+        ctx.save();
+        ctx.fillStyle = this.game.backgroundGradient || 'skyblue';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
+
+        // Translate for camera movement
+        ctx.save();
+        ctx.translate(-camera.x, -camera.y);
+
+        // Draw background (trees and snowflakes)
+        this.game.backgroundManager.draw(ctx, camera.x);
+
+        // Draw platforms
+        this.game.platformManager.draw(ctx);
+
+        // Draw Santas and Packages
+        this.game.santaManager.drawAll(ctx);
+
+        // Draw Snowmen
+        this.game.snowmanManager.drawAll(ctx);
+
+        // Draw player
+        this.game.player.draw(ctx);
+
+        // Restore translation
+        ctx.restore();
+
+        // Draw UI (always on top, not affected by camera)
+        this.game.ui.draw(ctx, this.game.player, canvas);
     }
 }

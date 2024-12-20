@@ -4,12 +4,44 @@ class Platform {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.isFloor = false;  // New flag to identify floor platforms
+        this.isFloor = false;  // Flag to identify floor platforms
+
+        // Winter-specific additions
+        this.snowCoverHeight = Math.min(10, height / 3);
+        this.woodTexture = this.generateWoodTexture();
+    }
+
+    generateWoodTexture() {
+        // Create a simple wood-like texture
+        const canvas = document.createElement('canvas');
+        canvas.width = this.width;
+        canvas.height = this.height;
+        const ctx = canvas.getContext('2d');
+
+        // Base wood color (dark brown)
+        ctx.fillStyle = '#8B4513';
+        ctx.fillRect(0, 0, this.width, this.height);
+
+        // Add wood grain lines
+        ctx.strokeStyle = 'rgba(139, 69, 19, 0.7)';
+        ctx.lineWidth = 1;
+        for (let i = 0; i < this.height; i += 5) {
+            ctx.beginPath();
+            ctx.moveTo(0, i);
+            ctx.lineTo(this.width, i + Math.random() * 10 - 5);
+            ctx.stroke();
+        }
+
+        // Snow on top
+        ctx.fillStyle = 'rgba(255, 249, 249, 0.99)';
+        ctx.fillRect(0, 0, this.width, this.snowCoverHeight);
+
+        return canvas;
     }
 
     draw(ctx) {
-        ctx.fillStyle = 'black';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        // Draw wood texture
+        ctx.drawImage(this.woodTexture, this.x, this.y);
     }
 }
 
@@ -48,10 +80,24 @@ class PlatformManager {
         }
     }
 
+    draw(ctx) {
+        // Draw floor segments first
+        this.floorSegments.forEach(floor => floor.draw(ctx));
+        
+        // Then draw platforms
+        this.platforms.forEach(platform => platform.draw(ctx));
+    }
+
     extendFloor(fromX, toX) {
         const floorPlatform = new Platform(fromX, this.game.canvas.height - 50, toX - fromX, 50);
         floorPlatform.isFloor = true;
         this.floorSegments.push(floorPlatform);
+    }
+
+    checkGenerateMorePlatforms(upToX) {
+        if (this.lastPlatformX < upToX) {
+            this.generateMorePlatforms(upToX);
+        }
     }
 
     generateMorePlatforms(upToX) {
@@ -101,18 +147,5 @@ class PlatformManager {
         this.floorSegments = this.floorSegments.filter(floor => 
             floor.x + floor.width > cleanupX
         );
-    }
-
-    checkGenerateMorePlatforms(viewX) {
-        if (this.lastPlatformX < viewX + this.game.canvas.width) {
-            this.generateMorePlatforms(viewX + this.game.canvas.width * 1.5);
-        }
-    }
-
-    draw(ctx) {
-        // Draw floor segments first
-        this.floorSegments.forEach(floor => floor.draw(ctx));
-        // Then draw platforms
-        this.platforms.forEach(platform => platform.draw(ctx));
     }
 }

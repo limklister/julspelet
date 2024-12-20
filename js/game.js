@@ -3,6 +3,7 @@ class Game {
         this.initCanvas();
         this.initGameObjects();
         this.initGameSystems();
+        this.initRestartListener();
         this.gameLoop();
     }
 
@@ -34,15 +35,32 @@ class Game {
         this.renderer = new Renderer(this);
     }
 
+    // New method to add restart listener
+    initRestartListener() {
+        window.addEventListener('keydown', (event) => {
+            // Restart game on 'R' or 'r' key when game is over
+            if ((this.gameOver) && (event.key === 'r' || event.key === 'R')) {
+                this.resetGame();
+            }
+        });
+    }
+
     resetGame() {
+        // Reset all game state
         this.gameOver = false;
         this.camera.reset();
+        
+        // Reset player
         this.player = new Player(100, this.canvas.height - 100);
         this.player.game = this;
+        
+        // Regenerate game objects
         this.platformManager = new PlatformManager(this);
         this.snowmanManager = new SnowmanManager(this);
         this.santaManager = new SantaManager(this);
         this.ui = new UI();
+        
+        // Recreate initial game setup
         this.platformManager.generateStartingPlatforms();
         this.snowmanManager.generateInitialSnowmen();
         this.santaManager.generateInitialSantas();

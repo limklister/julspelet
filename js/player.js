@@ -61,28 +61,57 @@ class Player {
             this.isInvulnerable = false;
         }
 
-        // Check for death
-        if (this.hearts <= 0 && this.game) {
+        // Check for death with falling out of the world handling
+        if (this.hearts <= 0 || this.y > this.game.canvas.height) {
             this.game.gameOver = true;
         }
     }
 
+    takeDamage() {
+        if (!this.isInvulnerable) {
+            this.hearts--;
+            this.makeInvulnerable();
+            
+            // Optional: Add a knockback effect
+            this.velocityY = this.jumpForce / 2;
+            this.velocityX = this.movingDirection * -this.speed;
+        }
+    }
+
     draw(ctx) {
-        // Don't draw if blinking during invulnerability
-        if (this.isInvulnerable && Math.floor((Date.now() - this.invulnerabilityTimer) / this.blinkRate) % 2) {
-            return;
+        // Game over text rendering
+        if (this.game && this.game.gameOver) {
+            // Save context state
+            ctx.save();
+            
+            // Reset transform for UI elements
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            
+            // Game over text
+            ctx.fillStyle = 'red';
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Game Over', this.game.canvas.width / 2, this.game.canvas.height / 2);
+            
+            // Restart instructions
+            ctx.fillStyle = 'red';
+            ctx.font = '24px Arial';
+            ctx.fillText('Press R to Restart', this.game.canvas.width / 2, this.game.canvas.height / 2 + 50);
+            
+            // Restore context state
+            ctx.restore();
         }
         
-        ctx.fillStyle = 'red';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-        
-        // Save context state
-        ctx.save();
-        
-        // Reset transform for UI elements
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        // Original drawing logic remains the same
+        if (!this.isInvulnerable || (this.isInvulnerable && Math.floor((Date.now() - this.invulnerabilityTimer) / this.blinkRate) % 2 === 0)) {
+            ctx.fillStyle = 'red';
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
         
         // Draw hearts
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        
         const heartSize = 20;
         const heartSpacing = 25;
         const heartY = 20;
@@ -100,7 +129,6 @@ class Player {
             ctx.fill();
         }
         
-        // Restore context state
         ctx.restore();
     }
 

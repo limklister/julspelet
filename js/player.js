@@ -83,56 +83,10 @@ class Player {
     }
 
     draw(ctx) {
-        // Game over text rendering
-        if (this.game && this.game.gameOver) {
-            // Save context state
-            ctx.save();
-            
-            // Reset transform for UI elements
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            
-            // Game over text
-            ctx.fillStyle = 'red';
-            ctx.font = 'bold 48px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('Game Over', this.game.canvas.width / 2, this.game.canvas.height / 2);
-            
-            // Restart instructions
-            ctx.fillStyle = 'black';
-            ctx.font = '24px Arial';
-            ctx.fillText('Press R to Restart', this.game.canvas.width / 2, this.game.canvas.height / 2 + 50);
-            
-            // Restore context state
-            ctx.restore();
-        }
-        
         // Draw player image with optional invulnerability blinking
         if (!this.isInvulnerable || (this.isInvulnerable && Math.floor((Date.now() - this.invulnerabilityTimer) / this.blinkRate) % 2 === 0)) {
             ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
-        
-        // Draw hearts
-        ctx.save();
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        
-        const heartSize = 20;
-        const heartSpacing = 25;
-        const heartY = 20;
-        
-        ctx.fillStyle = 'red';
-        for (let i = 0; i < this.hearts; i++) {
-            const heartX = 20 + i * heartSpacing;
-            // Simple heart shape
-            ctx.beginPath();
-            ctx.moveTo(heartX + heartSize/2, heartY + heartSize/4);
-            ctx.bezierCurveTo(heartX + heartSize/2, heartY, heartX, heartY, heartX, heartY + heartSize/4);
-            ctx.bezierCurveTo(heartX, heartY + heartSize/2, heartX + heartSize/2, heartY + heartSize, heartX + heartSize/2, heartY + heartSize);
-            ctx.bezierCurveTo(heartX + heartSize/2, heartY + heartSize, heartX + heartSize, heartY + heartSize/2, heartX + heartSize, heartY + heartSize/4);
-            ctx.bezierCurveTo(heartX + heartSize, heartY, heartX + heartSize/2, heartY, heartX + heartSize/2, heartY + heartSize/4);
-            ctx.fill();
-        }
-        
-        ctx.restore();
     }
 
     reset(x, y) {

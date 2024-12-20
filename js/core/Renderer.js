@@ -25,6 +25,10 @@ class Renderer {
         this.ctx.restore();
         
         // Draw UI elements (not affected by camera)
-        this.game.ui.draw(this.ctx);
+        this.game.ui.draw(
+            this.ctx, 
+            this.game.player, 
+            this.game.canvas
+        );
     }
 }

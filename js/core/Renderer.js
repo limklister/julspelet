@@ -33,6 +33,9 @@ class Renderer {
         // Draw Snowmen
         this.game.snowmanManager.drawAll(ctx);
 
+        // Draw Snowballs
+        this.game.snowballManager.drawAll(ctx);
+
         // Draw player
         this.game.player.draw(ctx);
 

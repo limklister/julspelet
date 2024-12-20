@@ -26,6 +26,7 @@ class Game {
         this.backgroundManager = new BackgroundManager(this);
         this.platformManager = new PlatformManager(this);
         this.snowmanManager = new SnowmanManager(this);
+        this.snowballManager = new SnowballManager(this);
         this.santaManager = new SantaManager(this);
         this.ui = new UI();
         
@@ -63,6 +64,7 @@ class Game {
         this.backgroundManager = new BackgroundManager(this);
         this.platformManager = new PlatformManager(this);
         this.snowmanManager = new SnowmanManager(this);
+        this.snowballManager = new SnowballManager(this);
         this.santaManager = new SantaManager(this);
         this.ui = new UI();
         
@@ -76,6 +78,7 @@ class Game {
         if (!this.gameOver) {
             this.player.update();
             this.snowmanManager.updateAll();
+            this.snowballManager.update();
             this.santaManager.updateAll();
             this.camera.update();
             this.collisionHandler.checkCollisions();

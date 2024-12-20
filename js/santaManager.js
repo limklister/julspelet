@@ -29,6 +29,11 @@ class SantaManager {
         this.packages = this.packages.filter(pkg => !pkg.collected);
     }
 
+    dropPackage(x, y) {
+        const newPackage = new Package(x, y);
+        this.packages.push(newPackage);
+    }
+
     drawAll(ctx) {
         this.santas.forEach(santa => santa.draw(ctx));
         this.packages.forEach(pkg => pkg.draw(ctx));

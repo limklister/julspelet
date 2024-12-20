@@ -1,35 +1,42 @@
 class Santa {
     constructor(x, y, game) {
+        this.game = game;
         this.x = x;
         this.y = y;
-        this.game = game;
-        this.width = 40;
-        this.height = 40;
-        this.velocityX = 2; // Santa moves side to side
-        this.dropCooldown = 3000; // 3 seconds between drops
-        this.lastDropTime = 0;
+        this.width = 50;  // Adjusted to match potential image size
+        this.height = 50; // Adjusted to match potential image size
+        this.speed = 2;
+        
+        // Image loading
+        this.image = new Image();
+        this.image.src = 'images/santa.png';
+        
+        this.packageDropInterval = 3000; // Drop package every 3 seconds
+        this.lastPackageDropTime = Date.now();
     }
 
     update() {
-        // Move side to side
-        this.x += this.velocityX;
+        // Move horizontally
+        this.x += this.speed;
         
-        // Reverse direction at screen edges
+        // Reverse direction if hitting canvas boundaries
         if (this.x <= 0 || this.x + this.width >= this.game.canvas.width) {
-            this.velocityX = -this.velocityX;
+            this.speed *= -1;
         }
         
-        // Check if it's time to drop a package
-        if (Date.now() - this.lastDropTime > this.dropCooldown) {
-            this.lastDropTime = Date.now();
-            return new Package(this.x + this.width / 2, this.y + this.height);
+        // Drop packages periodically
+        const currentTime = Date.now();
+        if (currentTime - this.lastPackageDropTime > this.packageDropInterval) {
+            // Return a new package instead of directly adding to game
+            const newPackage = new Package(this.x + this.width / 2, this.y + this.height);
+            this.lastPackageDropTime = currentTime;
+            return newPackage;
         }
         
         return null;
     }
 
     draw(ctx) {
-        ctx.fillStyle = '#FF0000'; // Red for Santa
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
 }

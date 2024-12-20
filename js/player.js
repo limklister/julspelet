@@ -2,8 +2,8 @@ class Player {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.width = 30;
-        this.height = 30;
+        this.width = 50;  // Adjusted to match potential image size
+        this.height = 50; // Adjusted to match potential image size
         this.velocityX = 0;
         this.velocityY = 0;
         this.speed = 5;
@@ -11,6 +11,10 @@ class Player {
         this.isJumping = false;
         this.movingDirection = 0;
         this.airControl = 0.7;
+        
+        // Image loading
+        this.image = new Image();
+        this.image.src = 'images/player.png';
         
         // Health system
         this.hearts = 3;
@@ -94,7 +98,7 @@ class Player {
             ctx.fillText('Game Over', this.game.canvas.width / 2, this.game.canvas.height / 2);
             
             // Restart instructions
-            ctx.fillStyle = 'red';
+            ctx.fillStyle = 'black';
             ctx.font = '24px Arial';
             ctx.fillText('Press R to Restart', this.game.canvas.width / 2, this.game.canvas.height / 2 + 50);
             
@@ -102,10 +106,9 @@ class Player {
             ctx.restore();
         }
         
-        // Original drawing logic remains the same
+        // Draw player image with optional invulnerability blinking
         if (!this.isInvulnerable || (this.isInvulnerable && Math.floor((Date.now() - this.invulnerabilityTimer) / this.blinkRate) % 2 === 0)) {
-            ctx.fillStyle = 'red';
-            ctx.fillRect(this.x, this.y, this.width, this.height);
+            ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
         
         // Draw hearts

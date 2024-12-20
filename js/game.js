@@ -72,6 +72,7 @@ class Game {
         this.platformManager.generateStartingPlatforms();
         this.snowmanManager.generateInitialSnowmen();
         this.santaManager.generateInitialSantas();
+        Package.resetPackageCount();
     }
 
     update() {

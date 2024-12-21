@@ -3,7 +3,7 @@ class Game {
         this.initCanvas();
         this.initGameObjects();
         this.initGameSystems();
-        this.initRestartListener();
+        this.initRestartSystem();
         this.currentLevel = 1;
         this.packagesCollected = 0;
         window.gameInstance = this;
@@ -50,16 +50,34 @@ class Game {
         this.renderer = new Renderer(this);
     }
 
-    initRestartListener() {
+    initRestartSystem() {
+        // Get the restart button element
+        this.restartButton = document.getElementById('restart-button');
+        
+        // Keyboard listener
         window.addEventListener('keydown', (event) => {
             if ((this.gameOver) && (event.key === 'r' || event.key === 'R')) {
                 this.resetGame();
             }
         });
+
+        // Touch/click listener for restart button
+        const restartBtn = document.getElementById('btn-restart');
+        if (restartBtn) {
+            ['touchstart', 'click'].forEach(eventType => {
+                restartBtn.addEventListener(eventType, (e) => {
+                    e.preventDefault();
+                    if (this.gameOver) {
+                        this.resetGame();
+                    }
+                });
+            });
+        }
     }
 
     resetGame() {
         this.gameOver = false;
+        this.hideRestartButton();
         this.camera.reset();
         this.currentLevel = 1;
         this.packagesCollected = 0;
@@ -83,10 +101,23 @@ class Game {
         Package.resetPackageCount();
     }
 
+    showRestartButton() {
+        if (this.restartButton) {
+            this.restartButton.classList.remove('hidden');
+        }
+    }
+
+    hideRestartButton() {
+        if (this.restartButton) {
+            this.restartButton.classList.add('hidden');
+        }
+    }
+
     nextLevel() {
         if (this.currentLevel === 3) {
-            // Show end game celebration
+            // Show end game celebration and restart button
             this.endGameCelebration.start();
+            this.showRestartButton();
             return;
         }
 
@@ -123,6 +154,12 @@ class Game {
     }
 
     update() {
+        // Check if game just became over
+        if (!this.gameOver && this.player.health <= 0) {
+            this.gameOver = true;
+            this.showRestartButton();
+        }
+
         if (!this.gameOver && !this.endGameCelebration.isShowing) {
             this.player.update();
             this.snowmanManager.updateAll();
@@ -150,7 +187,7 @@ class Game {
         // When 3 packages are collected, move portal in front of player
         if (this.packagesCollected >= 3) {
             // Position portal a bit ahead of the player
-            const portalX = this.player.x + 400; // 400 pixels ahead
+            const portalX = this.player.x + 400;
             const portalY = this.canvas.height - 200;
             
             // Move portal to new position
@@ -159,9 +196,9 @@ class Game {
             this.portal.activate();
             
             // Add a platform under the portal
-            this.platformManager.platforms = this.platformManager.platforms.filter(p => !p.isPortalPlatform); // Remove old portal platform if exists
+            this.platformManager.platforms = this.platformManager.platforms.filter(p => !p.isPortalPlatform);
             const portalPlatform = new Platform(portalX - 50, this.canvas.height - 50, 200, 50);
-            portalPlatform.isPortalPlatform = true; // Mark this platform as the portal platform
+            portalPlatform.isPortalPlatform = true;
             this.platformManager.platforms.push(portalPlatform);
         }
     }
@@ -170,21 +207,6 @@ class Game {
         this.update();
         this.renderer.draw();
         requestAnimationFrame(() => this.gameLoop());
-    }
-
-    // Debug method to show portal
-    showPortalDebug() {
-        const portalX = this.player.x + 400;
-        const portalY = this.canvas.height - 200;
-        this.portal.x = portalX;
-        this.portal.y = portalY;
-        this.portal.activate();
-        
-        // Add a platform under the portal
-        this.platformManager.platforms = this.platformManager.platforms.filter(p => !p.isPortalPlatform);
-        const portalPlatform = new Platform(portalX - 50, this.canvas.height - 50, 200, 50);
-        portalPlatform.isPortalPlatform = true;
-        this.platformManager.platforms.push(portalPlatform);
     }
 }
 

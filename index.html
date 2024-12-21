@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Julspelet</title>
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/game.css" />
@@ -13,6 +14,19 @@
       </div>
       <div id="game-container">
         <canvas id="gameCanvas"></canvas>
+        <div id="restart-button" class="hidden">
+          <button id="btn-restart">Restart Game</button>
+        </div>
+      </div>
+      <!-- Mobile controls -->
+      <div id="mobile-controls">
+        <div id="direction-controls">
+          <button id="btn-left">←</button>
+          <button id="btn-right">→</button>
+        </div>
+        <div id="action-controls">
+          <button id="btn-jump">Jump</button>
+        </div>
       </div>
     </div>
 

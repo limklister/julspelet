@@ -3,8 +3,10 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 800px; /* Adjust this value based on your game's max width */
+    max-width: 800px;
     margin: 0 auto;
+    height: 100vh;
+    padding: 10px;
 }
 
 #game-title {
@@ -14,7 +16,7 @@
 
 #game-title img {
     width: 100%;
-    max-width: 800px; /* Adjust this value to make the title smaller */
+    max-width: 800px;
     height: auto;
     display: block;
     margin: 0 auto;
@@ -25,6 +27,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-grow: 1;
+    position: relative;
 }
 
 #gameCanvas {
@@ -32,11 +36,115 @@
     height: auto;
     background-color: white;
     border: 2px solid #333;
+    max-height: 80vh;
+}
+
+/* Restart Button Styling */
+#restart-button {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    transition: opacity 0.3s ease;
+}
+
+#restart-button.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#btn-restart {
+    padding: 15px 30px;
+    font-size: 20px;
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+#btn-restart:active {
+    transform: scale(0.95);
+}
+
+/* Mobile Controls Styling */
+#mobile-controls {
+    width: 100%;
+    max-width: 800px;
+    display: none; /* Hidden by default, shown via media query */
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+#direction-controls {
+    display: flex;
+    gap: 20px;
+}
+
+#action-controls {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Button Styling */
+#mobile-controls button {
+    padding: 20px;
+    font-size: 24px;
+    border-radius: 50%;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    width: 70px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#btn-jump {
+    background-color: rgba(255, 200, 200, 0.7);
+}
+
+/* Active state for buttons */
+#mobile-controls button:active {
+    background-color: rgba(200, 200, 200, 0.9);
+    transform: scale(0.95);
 }
 
 /* Responsive adjustments */
 @media (max-width: 800px) {
     #game-title img {
-        max-width: 300px; /* Smaller title for mobile devices */
+        max-width: 300px;
+    }
+    
+    #game-wrapper {
+        padding: 5px;
+    }
+    
+    #gameCanvas {
+        max-height: 70vh;
+    }
+}
+
+/* Show mobile controls and restart button only on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    #mobile-controls {
+        display: flex;
+    }
+    
+    #game-container {
+        margin-bottom: 100px;
+    }
+
+    /* Only show restart button on mobile */
+    #restart-button {
+        display: block;
     }
 }

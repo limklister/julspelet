@@ -2,10 +2,33 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    touch-action: none;
 }
 
 body {
     overflow: hidden;
     background: linear-gradient(to bottom, #87CEEB, #E0F6FF);
-    background-color: #87CEEB; /* Sky blue background */
+    background-color: #87CEEB;
+    height: 100vh;
+    width: 100vw;
+    position: fixed; /* Prevents bouncing on iOS */
+}
+
+/* Hide mobile controls by default */
+#mobile-controls {
+    display: none;
+}
+
+/* Show mobile controls only on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    #mobile-controls {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 20px;
+        justify-content: space-between;
+        z-index: 1000;
+    }
 }

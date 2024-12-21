@@ -6,7 +6,6 @@ class Game {
         this.initRestartListener();
         this.currentLevel = 1;
         this.packagesCollected = 0;
-        // Make game instance available globally for debugging
         window.gameInstance = this;
         this.gameLoop();
     }
@@ -89,6 +88,9 @@ class Game {
     }
 
     nextLevel() {
+        // Start the transition animation
+        this.ui.startLevelTransition(this.currentLevel + 1);
+
         this.currentLevel++;
         this.packagesCollected = 0;
         
@@ -127,6 +129,9 @@ class Game {
             this.portal.update();
             this.camera.update();
             this.collisionHandler.checkCollisions();
+
+            // Update UI animations
+            this.ui.update();
 
             // Update background (generate more trees and snowflakes as we move)
             this.backgroundManager.update(this.camera.x);

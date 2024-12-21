@@ -6,6 +6,12 @@ class UI {
         
         this.packageImage = new Image();
         this.packageImage.src = 'images/gift.png';
+
+        // Add transition properties
+        this.showingLevelTransition = false;
+        this.transitionTimer = 0;
+        this.transitionDuration = 120; // frames (2 seconds at 60fps)
+        this.transitionText = '';
     }
 
     drawHearts(ctx, hearts) {
@@ -114,6 +120,84 @@ class UI {
         ctx.fillText('Tryck på R för nästa jul', canvas.width / 2, canvas.height / 2 + 50);
     }
 
+    // Add new method for level transition
+    startLevelTransition(level) {
+        this.showingLevelTransition = true;
+        this.transitionTimer = this.transitionDuration;
+        this.transitionText = `HURRA! NÄSTA NIVÅ!`;
+    }
+
+    // Add method to update transition
+    update() {
+        if (this.showingLevelTransition && this.transitionTimer > 0) {
+            this.transitionTimer--;
+            if (this.transitionTimer === 0) {
+                this.showingLevelTransition = false;
+            }
+        }
+    }
+
+    // Add method to draw transition
+    drawLevelTransition(ctx, canvas) {
+        if (!this.showingLevelTransition) return;
+
+        const progress = this.transitionTimer / this.transitionDuration;
+        const alpha = progress < 0.8 ? progress : (this.transitionTimer / this.transitionDuration);
+        
+        // Draw semi-transparent overlay
+        ctx.fillStyle = `rgba(0, 0, 0, ${alpha * 0.7})`;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Calculate bounce effect
+        const bounceOffset = Math.sin(progress * Math.PI * 2) * 20;
+
+        // Draw main text with glow effect
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        // Draw glow
+        ctx.shadowColor = 'gold';
+        ctx.shadowBlur = 20;
+        ctx.font = 'bold 48px Arial';
+        ctx.fillStyle = `rgba(255, 223, 0, ${alpha})`; // Golden yellow
+        ctx.fillText(this.transitionText, 
+            canvas.width / 2, 
+            canvas.height / 2 + bounceOffset);
+
+        // Draw text outline
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.strokeText(this.transitionText, 
+            canvas.width / 2, 
+            canvas.height / 2 + bounceOffset);
+        
+        ctx.restore();
+
+        // Draw sparkles
+        this.drawSparkles(ctx, canvas, progress);
+    }
+
+    drawSparkles(ctx, canvas, progress) {
+        const numSparkles = 20;
+        const radius = 200;
+        
+        ctx.save();
+        for (let i = 0; i < numSparkles; i++) {
+            const angle = (i / numSparkles) * Math.PI * 2 + progress * 5;
+            const x = canvas.width / 2 + Math.cos(angle) * radius * progress;
+            const y = canvas.height / 2 + Math.sin(angle) * radius * progress;
+            
+            const sparkleSize = 3 + Math.sin(progress * 10 + i) * 2;
+            
+            ctx.beginPath();
+            ctx.fillStyle = `rgba(255, 255, 0, ${progress})`;
+            ctx.arc(x, y, sparkleSize, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        ctx.restore();
+    }
+
     draw(ctx, player, canvas) {
         // Save context state
         ctx.save();
@@ -139,6 +223,11 @@ class UI {
         if (game && game.gameOver) {
             this.drawGameOverScreen(ctx, canvas);
         }
+
+        // Draw level transition if active
+        if (this.showingLevelTransition) {
+            this.drawLevelTransition(ctx, canvas);
+        }
         
         // Restore context state
         ctx.restore();
@@ -147,5 +236,7 @@ class UI {
     reset() {
         // Reset any UI-specific state if needed
         Package.resetPackageCount();
+        this.showingLevelTransition = false;
+        this.transitionTimer = 0;
     }
 }

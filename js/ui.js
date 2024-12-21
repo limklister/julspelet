@@ -69,12 +69,12 @@ class UI {
         ctx.fillStyle = 'red';
         ctx.font = 'bold 48px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2);
+        ctx.fillText('Julen är slut!', canvas.width / 2, canvas.height / 2);
         
         // Restart instructions
         ctx.fillStyle = 'black';
         ctx.font = '24px Arial';
-        ctx.fillText('Press R to Restart', canvas.width / 2, canvas.height / 2 + 50);
+        ctx.fillText('Tryck på R för nästa jul', canvas.width / 2, canvas.height / 2 + 50);
     }
 
     draw(ctx, player, canvas) {

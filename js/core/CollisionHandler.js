@@ -7,6 +7,7 @@ class CollisionHandler {
         this.checkPlatformCollisions();
         this.checkSnowmanCollisions();
         this.checkPackageCollisions();
+        this.checkPortalCollision();
     }
 
     checkPlatformCollisions() {
@@ -66,6 +67,13 @@ class CollisionHandler {
                 this.game.collectPackage();
             }
         });
+    }
+
+    checkPortalCollision() {
+        const portal = this.game.portal;
+        if (portal.isActive && this.detectCollision(this.game.player, portal)) {
+            this.game.nextLevel();
+        }
     }
 
     detectCollision(rect1, rect2) {

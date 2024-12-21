@@ -39,17 +39,26 @@ class UI {
         }
     }
 
-    drawPackageCount(ctx, canvas) {
+    drawPackageCount(ctx, canvas, game) {
         const packageSize = 20;
         const packageSpacing = 25;
         const packageY = 20;
-        const packagesCollected = Package.getPackageCount();
         
         // Position packages 100 pixels from the right edge of the canvas
-        const startX = canvas.width - 100;
+        const startX = canvas.width - 150;
+
+        // Draw current/required packages text
+        ctx.font = '20px Arial';
+        ctx.fillStyle = 'white';
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3;
+        ctx.textAlign = 'right';
+        const packagesText = `${game.packagesCollected}/3 paket`;
+        ctx.strokeText(packagesText, startX - 10, packageY + 15);
+        ctx.fillText(packagesText, startX - 10, packageY + 15);
         
         // Draw package icons for each collected package
-        for (let i = 0; i < packagesCollected; i++) {
+        for (let i = 0; i < game.packagesCollected; i++) {
             const packageX = startX + i * packageSpacing;
             
             if (this.packageImage.complete && this.packageImage.naturalHeight !== 0) {
@@ -64,7 +73,35 @@ class UI {
         }
     }
 
+    drawLevel(ctx, game) {
+        ctx.font = '24px Arial';
+        ctx.fillStyle = 'white';
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3;
+        ctx.textAlign = 'left';
+        const levelText = `Nivå ${game.currentLevel}`;
+        ctx.strokeText(levelText, 20, 60);
+        ctx.fillText(levelText, 20, 60);
+    }
+
+    drawPortalHint(ctx, canvas, game) {
+        if (game.packagesCollected >= 3 && game.portal.isActive) {
+            ctx.font = '20px Arial';
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 3;
+            ctx.textAlign = 'center';
+            const hintText = 'Portalen är öppen! →';
+            ctx.strokeText(hintText, canvas.width / 2, 30);
+            ctx.fillText(hintText, canvas.width / 2, 30);
+        }
+    }
+
     drawGameOverScreen(ctx, canvas) {
+        // Semi-transparent black background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
         // Game over text
         ctx.fillStyle = 'red';
         ctx.font = 'bold 48px Arial';
@@ -72,7 +109,7 @@ class UI {
         ctx.fillText('Julen är slut!', canvas.width / 2, canvas.height / 2);
         
         // Restart instructions
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = 'white';
         ctx.font = '24px Arial';
         ctx.fillText('Tryck på R för nästa jul', canvas.width / 2, canvas.height / 2 + 50);
     }
@@ -84,14 +121,22 @@ class UI {
         // Reset transform for UI elements
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         
+        const game = player.game;
+        
         // Draw hearts
         this.drawHearts(ctx, player.hearts);
         
         // Draw package count
-        this.drawPackageCount(ctx, canvas);
+        this.drawPackageCount(ctx, canvas, game);
+        
+        // Draw level number
+        this.drawLevel(ctx, game);
+        
+        // Draw portal hint
+        this.drawPortalHint(ctx, canvas, game);
         
         // Draw game over screen if needed
-        if (player.game && player.game.gameOver) {
+        if (game && game.gameOver) {
             this.drawGameOverScreen(ctx, canvas);
         }
         

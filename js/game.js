@@ -4,6 +4,10 @@ class Game {
         this.initGameObjects();
         this.initGameSystems();
         this.initRestartListener();
+        this.currentLevel = 1;
+        this.packagesCollected = 0;
+        // Make game instance available globally for debugging
+        window.gameInstance = this;
         this.gameLoop();
     }
 
@@ -30,6 +34,10 @@ class Game {
         this.santaManager = new SantaManager(this);
         this.ui = new UI();
         
+        // Add portal (initially off screen)
+        this.portal = new Portal(-1000, 0); // Start off-screen
+        // Don't add platform yet - we'll add it when portal appears
+        
         this.platformManager.generateStartingPlatforms();
         this.snowmanManager.generateInitialSnowmen();
         this.santaManager.generateInitialSantas();
@@ -55,6 +63,8 @@ class Game {
         // Reset all game state
         this.gameOver = false;
         this.camera.reset();
+        this.currentLevel = 1;
+        this.packagesCollected = 0;
         
         // Reset player
         this.player = new Player(100, this.canvas.height - 100);
@@ -68,7 +78,40 @@ class Game {
         this.santaManager = new SantaManager(this);
         this.ui = new UI();
         
+        // Reset portal (off screen)
+        this.portal = new Portal(-1000, 0);
+        
         // Recreate initial game setup
+        this.platformManager.generateStartingPlatforms();
+        this.snowmanManager.generateInitialSnowmen();
+        this.santaManager.generateInitialSantas();
+        Package.resetPackageCount();
+    }
+
+    nextLevel() {
+        this.currentLevel++;
+        this.packagesCollected = 0;
+        
+        // Reset player position but keep their health
+        const currentHealth = this.player.health;
+        this.player = new Player(100, this.canvas.height - 100);
+        this.player.game = this;
+        this.player.health = currentHealth;
+        
+        // Reset camera
+        this.camera.reset();
+        
+        // Reset game objects for new level
+        this.backgroundManager = new BackgroundManager(this);
+        this.platformManager = new PlatformManager(this);
+        this.snowmanManager = new SnowmanManager(this);
+        this.snowballManager = new SnowballManager(this);
+        this.santaManager = new SantaManager(this);
+        
+        // Reset portal (off screen)
+        this.portal = new Portal(-1000, 0);
+        
+        // Generate new level
         this.platformManager.generateStartingPlatforms();
         this.snowmanManager.generateInitialSnowmen();
         this.santaManager.generateInitialSantas();
@@ -81,6 +124,7 @@ class Game {
             this.snowmanManager.updateAll();
             this.snowballManager.update();
             this.santaManager.updateAll();
+            this.portal.update();
             this.camera.update();
             this.collisionHandler.checkCollisions();
 
@@ -90,13 +134,46 @@ class Game {
     }
 
     collectPackage() {
-        // Score functionality removed for now
+        this.packagesCollected++;
+        
+        // When 3 packages are collected, move portal in front of player
+        if (this.packagesCollected >= 3) {
+            // Position portal a bit ahead of the player
+            const portalX = this.player.x + 400; // 400 pixels ahead
+            const portalY = this.canvas.height - 200;
+            
+            // Move portal to new position
+            this.portal.x = portalX;
+            this.portal.y = portalY;
+            this.portal.activate();
+            
+            // Add a platform under the portal
+            this.platformManager.platforms = this.platformManager.platforms.filter(p => !p.isPortalPlatform); // Remove old portal platform if exists
+            const portalPlatform = new Platform(portalX - 50, this.canvas.height - 50, 200, 50);
+            portalPlatform.isPortalPlatform = true; // Mark this platform as the portal platform
+            this.platformManager.platforms.push(portalPlatform);
+        }
     }
 
     gameLoop() {
         this.update();
         this.renderer.draw();
         requestAnimationFrame(() => this.gameLoop());
+    }
+
+    // Debug method to show portal
+    showPortalDebug() {
+        const portalX = this.player.x + 400;
+        const portalY = this.canvas.height - 200;
+        this.portal.x = portalX;
+        this.portal.y = portalY;
+        this.portal.activate();
+        
+        // Add a platform under the portal
+        this.platformManager.platforms = this.platformManager.platforms.filter(p => !p.isPortalPlatform);
+        const portalPlatform = new Platform(portalX - 50, this.canvas.height - 50, 200, 50);
+        portalPlatform.isPortalPlatform = true;
+        this.platformManager.platforms.push(portalPlatform);
     }
 }
 

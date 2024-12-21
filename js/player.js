@@ -24,6 +24,10 @@ class Player {
         this.invulnerabilityTime = 1500; // 1.5 seconds
         this.invulnerabilityTimer = 0;
         this.blinkRate = 100; // Blink every 100ms when invulnerable
+
+        // Sound
+        this.jumpSound = document.getElementById('jumpSound');
+        this.damageSound = document.getElementById('damageSound');
     }
 
     move(direction) {
@@ -44,6 +48,21 @@ class Player {
             if (this.movingDirection !== 0) {
                 this.velocityX = this.movingDirection * this.speed;
             }
+            this.playJumpSound();
+        }
+    }
+
+    playJumpSound() {
+        if (this.jumpSound) {
+            this.jumpSound.currentTime = 0; // Reset to start
+            this.jumpSound.play();
+        }
+    }
+
+    playDamageSound() {
+        if (this.damageSound) {
+            this.damageSound.currentTime = 0; // Reset to start
+            this.damageSound.play();
         }
     }
 
@@ -75,6 +94,7 @@ class Player {
         if (!this.isInvulnerable) {
             this.hearts--;
             this.makeInvulnerable();
+            this.playDamageSound();
             
             // Optional: Add a knockback effect
             this.velocityY = this.jumpForce / 2;

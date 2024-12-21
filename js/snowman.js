@@ -78,5 +78,12 @@ class Snowman {
         // Called when snowman is defeated
         this.isDead = true;
         this.deathAnimation = 0;
+        
+        // Play death sound
+        const snowmanDiesSound = document.getElementById('snowmanDiesSound');
+        if (snowmanDiesSound) {
+            snowmanDiesSound.currentTime = 0; // Reset sound to start
+            snowmanDiesSound.play();
+        }
     }
 }

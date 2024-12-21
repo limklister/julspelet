@@ -33,7 +33,7 @@ class Platform {
         }
 
         // Snow on top
-        ctx.fillStyle = 'rgba(255, 249, 249, 0.99)';
+        ctx.fillStyle = 'rgba(255, 249, 249, 0.95)';
         ctx.fillRect(0, 0, this.width, this.snowCoverHeight);
 
         return canvas;

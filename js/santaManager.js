@@ -10,6 +10,9 @@ class SantaManager {
         this.spawnTimer = 0;
         this.minSpawnInterval = 1000; // Minimum 1 second between spawn attempts
         this.maxSpawnInterval = 20000; // Maximum 20 seconds between spawn attempts
+
+        // Santa sound
+        this.santaSound = document.getElementById('santaSound');
     }
 
     generateInitialSantas() {
@@ -41,6 +44,7 @@ class SantaManager {
             const newPackage = santa.update();
             if (newPackage) {
                 this.packages.push(newPackage);
+                this.playSantaSound();
             }
         });
 
@@ -89,6 +93,14 @@ class SantaManager {
     dropPackage(x, y) {
         const newPackage = new Package(x, y);
         this.packages.push(newPackage);
+        this.playSantaSound();
+    }
+
+    playSantaSound() {
+        if (this.santaSound) {
+            this.santaSound.currentTime = 0; // Reset to start
+            this.santaSound.play();
+        }
     }
 
     drawAll(ctx) {

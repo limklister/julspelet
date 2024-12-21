@@ -1,14 +1,36 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Christmas Game</title>
+    <title>Julspelet</title>
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/game.css" />
   </head>
   <body>
-    <div id="game-container">
-      <canvas id="gameCanvas"></canvas>
+    <div id="game-wrapper">
+      <div id="game-title">
+        <img src="images/title.png" alt="Game Title" />
+      </div>
+      <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+      </div>
     </div>
+
+    <!-- Audio elements -->
+    <audio id="jumpSound">
+      <source src="sounds/boing.m4a" type="audio/mp4" />
+    </audio>
+    <audio id="damageSound">
+      <source src="sounds/ouch.m4a" type="audio/mp4" />
+    </audio>
+    <audio id="santaSound">
+      <source src="sounds/hohoho.m4a" type="audio/mp4" />
+    </audio>
+    <audio id="snowballSound">
+      <source src="sounds/snowball.m4a" type="audio/mp4" />
+    </audio>
+    <audio id="snowmanDiesSound">
+      <source src="sounds/snowman_dies.m4a" type="audio/mp4" />
+    </audio>
 
     <!-- Utils and core first -->
     <script src="js/physics.js"></script>

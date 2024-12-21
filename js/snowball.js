@@ -50,6 +50,7 @@ class SnowballManager {
         this.game = game;
         this.snowballs = [];
         this.throwCooldown = 0;
+        this.snowballSound = document.getElementById('snowballSound');
     }
 
     update() {
@@ -73,6 +74,13 @@ class SnowballManager {
 
         // Manage throwing snowballs from snowmen
         this.manageSnowballThrows();
+    }
+
+    playSnowballSound() {
+        if (this.snowballSound) {
+            this.snowballSound.currentTime = 0; // Reset to start
+            this.snowballSound.play();
+        }
     }
 
     manageSnowballThrows() {
@@ -106,6 +114,7 @@ class SnowballManager {
                         (Math.random() * 100 - 50);  // Spread target area
                     
                     // Throw snowball
+                    this.playSnowballSound();
                     const snowball = new Snowball(
                         snowman.x + snowman.width / 2, 
                         snowman.y + snowman.height / 2,

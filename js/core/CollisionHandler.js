@@ -49,10 +49,7 @@ class CollisionHandler {
                     player.velocityY = -12; // Bounce up
                 } else if (!player.isInvulnerable) {
                     // Player hits snowman from side or below - take damage
-                    player.makeInvulnerable();
-                    if (player.hearts > 0) {
-                        player.hearts--;
-                    }
+                    player.takeDamage();
                     // Add knockback
                     const knockbackDirection = player.x < snowman.x ? -1 : 1;
                     player.velocityX = knockbackDirection * 10;

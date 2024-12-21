@@ -17,7 +17,7 @@ class Player {
         this.image.src = 'images/player.png';
         
         // Health system
-        this.hearts = 3;
+        this.health = 3;
         
         // Invulnerability properties
         this.isInvulnerable = false;
@@ -85,14 +85,14 @@ class Player {
         }
 
         // Check for death with falling out of the world handling
-        if (this.hearts <= 0 || this.y > this.game.canvas.height) {
+        if (this.health <= 0 || this.y > this.game.canvas.height) {
             this.game.gameOver = true;
         }
     }
 
     takeDamage() {
         if (!this.isInvulnerable) {
-            this.hearts--;
+            this.health--;
             this.makeInvulnerable();
             this.playDamageSound();
             
@@ -115,6 +115,6 @@ class Player {
         this.velocityX = 0;
         this.velocityY = 0;
         this.isInvulnerable = false;
-        this.hearts = 3;
+        this.health = 3;
     }
 }

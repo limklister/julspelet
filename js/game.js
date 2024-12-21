@@ -25,17 +25,17 @@ class Game {
 
     initGameObjects() {
         this.player = new Player(100, this.canvas.height - 100);
-        this.player.game = this; // Give player reference to game
+        this.player.game = this;
         this.backgroundManager = new BackgroundManager(this);
         this.platformManager = new PlatformManager(this);
         this.snowmanManager = new SnowmanManager(this);
         this.snowballManager = new SnowballManager(this);
         this.santaManager = new SantaManager(this);
         this.ui = new UI();
+        this.endGameCelebration = new EndGameCelebration(this);
         
         // Add portal (initially off screen)
-        this.portal = new Portal(-1000, 0); // Start off-screen
-        // Don't add platform yet - we'll add it when portal appears
+        this.portal = new Portal(-1000, 0);
         
         this.platformManager.generateStartingPlatforms();
         this.snowmanManager.generateInitialSnowmen();
@@ -59,28 +59,24 @@ class Game {
     }
 
     resetGame() {
-        // Reset all game state
         this.gameOver = false;
         this.camera.reset();
         this.currentLevel = 1;
         this.packagesCollected = 0;
         
-        // Reset player
         this.player = new Player(100, this.canvas.height - 100);
         this.player.game = this;
         
-        // Regenerate game objects
         this.backgroundManager = new BackgroundManager(this);
         this.platformManager = new PlatformManager(this);
         this.snowmanManager = new SnowmanManager(this);
         this.snowballManager = new SnowballManager(this);
         this.santaManager = new SantaManager(this);
         this.ui = new UI();
+        this.endGameCelebration = new EndGameCelebration(this);
         
-        // Reset portal (off screen)
         this.portal = new Portal(-1000, 0);
         
-        // Recreate initial game setup
         this.platformManager.generateStartingPlatforms();
         this.snowmanManager.generateInitialSnowmen();
         this.santaManager.generateInitialSantas();
@@ -88,6 +84,12 @@ class Game {
     }
 
     nextLevel() {
+        if (this.currentLevel === 3) {
+            // Show end game celebration
+            this.endGameCelebration.start();
+            return;
+        }
+
         // Start the transition animation
         this.ui.startLevelTransition(this.currentLevel + 1);
 
@@ -121,7 +123,7 @@ class Game {
     }
 
     update() {
-        if (!this.gameOver) {
+        if (!this.gameOver && !this.endGameCelebration.isShowing) {
             this.player.update();
             this.snowmanManager.updateAll();
             this.snowballManager.update();
@@ -132,9 +134,13 @@ class Game {
 
             // Update UI animations
             this.ui.update();
-
-            // Update background (generate more trees and snowflakes as we move)
+            // Update background
             this.backgroundManager.update(this.camera.x);
+        }
+
+        // Always update end game celebration if it's showing
+        if (this.endGameCelebration.isShowing) {
+            this.endGameCelebration.update();
         }
     }
 

@@ -47,5 +47,10 @@ class Renderer {
 
         // Draw UI (always on top, not affected by camera)
         this.game.ui.draw(ctx, this.game.player, canvas);
+
+        // Draw end game celebration (if active)
+        if (this.game.endGameCelebration.isShowing) {
+            this.game.endGameCelebration.draw(ctx, canvas);
+        }
     }
 }

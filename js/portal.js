@@ -110,10 +110,10 @@ class Portal {
     }
 
     activate() {
-        const snowmanDiesSound = document.getElementById('portalSound');
-        if (snowmanDiesSound) {
-            snowmanDiesSound.currentTime = 0; // Reset sound to start
-            snowmanDiesSound.play();
+        const portalSound = document.getElementById('portalSound');
+        if (portalSound) {
+            portalSound.currentTime = 0; // Reset sound to start
+            portalSound.play();
         }
         this.isActive = true;
     }
